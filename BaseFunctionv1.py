@@ -61,6 +61,7 @@ def buy_stock(stock, num_shares, row, positions, cash, index):
         positions[stock]['purchase_price'].append(row['close'] * num_shares)
         positions[stock]['buy_price'].append(row['close'])
         positions[stock]['purchase_date'].append(index)
+    
     return cash
 
 def sell_stock(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses):
@@ -72,21 +73,29 @@ def sell_stock(stock, row, positions, cash, trade_gains_losses, trade_set, index
         percent_gains = trade_gains / positions[stock]['purchase_price'][i]
         percent_gains_losses[stock].append(percent_gains)
 
+    cash += row['close'] * sum(positions[stock]['num_shares'])
+    return cash
 
+def trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses):
+    for i, purchase_price in enumerate(positions[stock]['purchase_price']):
         print(f"Trade {trade_set}.{i+1} of {stock.capitalize()}:")
         print(f"Purchased on {positions[stock]['purchase_date'][i].date()} for ${positions[stock]['buy_price'][i]:.2f}")
         print(f"Sold on {index.date()} for ${sold_price:.2f}")
         print(f"Trade gains from {stock} trade {trade_set}.{i + 1}, ${float(trade_gains):.2f}")
         print(f"You made %{(percent_gains * 100):.2f}")
         print(f" ")
-    cash += row['close'] * sum(positions[stock]['num_shares'])
+        #displays metrics then delets position
     del positions[stock]
-    return cash
 
-#function to display all metrics
-def display_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, sell_price):
+#function to display final metrics
+def display_final_metrics(stock, row, positions, cash, trade_gains_losses):
     for i, purchase_price in enumerate(positions[stock]['purchase_price']):
         print(purchase_price)
+    for stock in trade_gains_losses:
+        print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock])}")
+    for stock in positions:
+        for i, price in enumerate(positions[stock]['purchase_price']):
+            print(f"You have shares worth ${price / positions[stock]['num_shares'][i]} at end of period")
 
 
 def rsi(data, periods=14):
@@ -103,7 +112,6 @@ def rsi(data, periods=14):
 def backtest_strategy(stock_list):
     
     start_date, end_date = set_timeframe()
-
 
     trade_gains_losses = defaultdict(list)
     percent_gains_losses = defaultdict(list)
@@ -132,20 +140,22 @@ def backtest_strategy(stock_list):
             elif sell_condition(stock, positions, row):
                 trade_set += 1
                 cash = sell_stock(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses)
+                trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses)
             stock_prices[stock].append(row['close'])
             rsi_values[stock].append(row['rsi'])
 
     final_balance = cash
 
+    display_final_metrics(stock, row, positions, cash, trade_gains_losses)
     # Calculate total gains/losses per stock
-    for stock in trade_gains_losses:
+    '''for stock in trade_gains_losses:
         print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock])}")
 
     # Calculate the value of your remaining positions
     for stock in positions:
         for i, price in enumerate(positions[stock]['purchase_price']):
             print(f"You have shares worth ${price / positions[stock]['num_shares'][i]} at end of period")
-
+    '''
     return final_balance, initial_balance
 
 
