@@ -11,9 +11,11 @@ BASE_URL = 'https://paper-api.alpaca.markets'
 
 api = tradeapi.REST(API_KEY, SECRET_KEY, base_url=BASE_URL, api_version='v2')
 
-input_str = input("Enter stocks separated by space: ")
-# Split the string and convert each value to integer, creating an array
-stock_list = input_str.split()
+def stock_list():
+    input_str = input("Enter stocks separated by space: ")
+    # Split the string and convert each value to integer, creating an array
+    stock_list = input_str.split()
+    return stock_list
 
 def get_historical_data(stock, start_date, end_date):
     bars = api.get_bars(stock, tradeapi.rest.TimeFrame.Day, start_date, end_date, limit=None, adjustment='raw').df
@@ -108,12 +110,16 @@ def trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, in
         #displays metrics then deletes position
     
 #function to display final metrics
-def display_final_metrics(stock, row, positions, cash, trade_gains_losses):
-    for stock in trade_gains_losses:
-        print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock]):.2f}")
+def display_final_metrics(final_balance, initial_balance, stock, row, positions, cash, trade_gains_losses):
     for stock in positions:
         for i, price in enumerate(positions[stock]['purchase_price']):
             print(f"You have shares worth ${price / positions[stock]['num_shares'][i]} at end of period")
+    for stock in trade_gains_losses:
+        print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock]):.2f}")
+    print(f"Initial account balance: ${initial_balance:.2f}")
+    print(f"Final account balance: ${final_balance:.2f}")
+    print(f"You made: {((final_balance - initial_balance) / initial_balance) * 100:.2f}%")
+    print(f"You made: {(final_balance - initial_balance):.2f}$")
 
 
 def rsi(data, periods=14):
@@ -129,6 +135,9 @@ def rsi(data, periods=14):
 
 def backtest_strategy(stock_list):
     
+    #set stocklist function
+    stock_list = stock_list()
+
     start_date, end_date = set_timeframe()
 
     trade_gains_losses = defaultdict(list)
@@ -164,15 +173,11 @@ def backtest_strategy(stock_list):
 
     final_balance = cash
 
-    display_final_metrics(stock, row, positions, cash, trade_gains_losses)
-
-    return final_balance, initial_balance
+    return final_balance, initial_balance, stock, row, positions, cash, trade_gains_losses
 
 
 
 if __name__ == '__main__':
-    final_balance, initial_balance = backtest_strategy(stock_list)
-    print(f"Initial account balance: ${initial_balance:.2f}")
-    print(f"Final account balance: ${final_balance:.2f}")
-    print(f"You made: {((final_balance - initial_balance) / initial_balance) * 100:.2f}%")
-    print(f"You made: {(final_balance - initial_balance):.2f}$")
+    final_balance, initial_balance, stock, row, positions, cash, trade_gains_losses = backtest_strategy(stock_list)
+    display_final_metrics(final_balance, initial_balance, stock, row, positions, cash, trade_gains_losses)
+    
