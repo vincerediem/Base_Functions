@@ -19,9 +19,16 @@ def get_historical_data(stock, start_date, end_date):
     bars = api.get_bars(stock, tradeapi.rest.TimeFrame.Day, start_date, end_date, limit=None, adjustment='raw').df
     return bars
 
+def set_timeframe():
+    start_date = (datetime.datetime.now(timezone('America/New_York')) - datetime.timedelta(days=365)).strftime(
+        '%Y-%m-%d')
+    end_date = (
+        datetime.datetime.now(timezone('America/New_York')) - datetime.timedelta(minutes=15)).strftime(
+        '%Y-%m-%dT%H:%M:%SZ')
+    
+    return start_date, end_date
 
-#buy condition for function
-#returns true or false
+#buy condition as function
 def buy_condition(row):
     buy_condition_met = False
 
@@ -95,11 +102,7 @@ def rsi(data, periods=14):
 
 def backtest_strategy(stock_list):
     
-    start_date = (datetime.datetime.now(timezone('America/New_York')) - datetime.timedelta(days=365)).strftime(
-        '%Y-%m-%d')
-    end_date = (
-        datetime.datetime.now(timezone('America/New_York')) - datetime.timedelta(minutes=15)).strftime(
-        '%Y-%m-%dT%H:%M:%SZ')
+    start_date, end_date = set_timeframe()
 
 
     trade_gains_losses = defaultdict(list)
