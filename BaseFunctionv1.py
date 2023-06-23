@@ -180,4 +180,3 @@ def backtest_strategy(stock_list):
 if __name__ == '__main__':
     final_balance, initial_balance, stock, row, positions, cash, trade_gains_losses = backtest_strategy(stock_list)
     display_final_metrics(final_balance, initial_balance, stock, row, positions, cash, trade_gains_losses)
-    
