@@ -34,8 +34,7 @@ def set_timeframe():
 def buy_condition(row):
     buy_condition_met = False
 
-    if row['rsi'] < 30:
-        buy_condition_met = True
+    if __________
 
     return buy_condition_met
 
@@ -43,8 +42,7 @@ def buy_condition(row):
 def sell_condition(stock, positions, row):
     sell_condition_met = False
 
-    if stock in positions and row['rsi'] > 65:
-        sell_condition_met = True
+    if __________
     
     return sell_condition_met
 
