@@ -108,15 +108,13 @@ def trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, in
         #displays metrics then deletes position
     
 #function to display final metrics
-'''def display_final_metrics(stock, row, positions, cash, trade_gains_losses):
-    for i, purchase_price in enumerate(positions[stock]['purchase_price']):
-        print(purchase_price)
+def display_final_metrics(stock, row, positions, cash, trade_gains_losses):
     for stock in trade_gains_losses:
-        print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock])}")
+        print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock]):.2f}")
     for stock in positions:
         for i, price in enumerate(positions[stock]['purchase_price']):
             print(f"You have shares worth ${price / positions[stock]['num_shares'][i]} at end of period")
-'''
+
 
 def rsi(data, periods=14):
     delta = data.diff()
@@ -166,7 +164,7 @@ def backtest_strategy(stock_list):
 
     final_balance = cash
 
-    #display_final_metrics(stock, row, positions, cash, trade_gains_losses)
+    display_final_metrics(stock, row, positions, cash, trade_gains_losses)
     # Calculate total gains/losses per stock
     '''for stock in trade_gains_losses:
         print(f"Total gains/losses for {stock}: {sum(trade_gains_losses[stock])}")
