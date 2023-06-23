@@ -22,10 +22,22 @@ def get_historical_data(stock, start_date, end_date):
 
 #buy condition for function
 #returns true or false
-def buy_condition():
-    if: #some buy condition
-        
-    else
+def buy_condition(row):
+    buy_condition_met = False
+
+    if row['rsi'] < 30:
+        buy_condition_met = True
+
+    return buy_condition_met
+
+#sell condition
+def sell_condition(stock, positions, row):
+    sell_condition_met = False
+
+    if stock in positions and row['rsi'] > 65:
+        sell_condition_met = True
+    
+    return sell_condition_met
 
 def buy_stock(stock, num_shares, row, positions, cash, index):
     cash -= row['close'] * num_shares
@@ -112,9 +124,9 @@ def backtest_strategy(stock_list):
             if pd.isna(row['rsi']):
                 continue
             #buy and sell conditions
-            if row['rsi'] < 30:
+            if buy_condition(row):
                 cash = buy_stock(stock, num_shares, row, positions, cash,  index)
-            elif stock in positions and row['rsi'] > 65:
+            elif sell_condition(stock, positions, row):
                 trade_set += 1
                 cash = sell_stock(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses)
             stock_prices[stock].append(row['close'])
