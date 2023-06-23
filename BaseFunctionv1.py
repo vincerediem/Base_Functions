@@ -93,18 +93,11 @@ def sell_stock(stock, row, positions, cash, trade_gains_losses, positions_sold, 
             positions_sold[stock]['percent_gain'].append(percent_gains)
             positions_sold[stock]['trade_gains'].append(trade_gains)
                 
-        print(f"Trade {trade_set}.{i+1} of {stock.capitalize()}:")
-        print(f"Purchased on {positions_sold[stock]['purchase_date'][i].date()} for ${positions_sold[stock]['buy_price'][i]:.2f}")
-        print(f"Sold on {positions_sold[stock]['sold_date'][i].date()} for ${positions_sold[stock]['sold_price'][i]:.2f}")
-        print(f"Trade gains from {stock} trade {trade_set}.{i + 1}, ${float(positions_sold[stock]['trade_gains'][i]):.2f}")
-        print(f"You made %{(positions_sold[stock]['percent_gain'][i] * 100):.2f}")
-        print(f" ")
-
     cash += row['close'] * sum(positions[stock]['num_shares'])
     del positions[stock]
     return cash
 
-'''def trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses, positions_sold):
+def trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses, positions_sold):
     for i, _ in enumerate(positions_sold[stock]['purchase_price']):
         print(f"Trade {trade_set}.{i+1} of {stock.capitalize()}:")
         print(f"Purchased on {positions_sold[stock]['purchase_date'][i].date()} for ${positions_sold[stock]['buy_price'][i]:.2f}")
@@ -112,7 +105,7 @@ def sell_stock(stock, row, positions, cash, trade_gains_losses, positions_sold, 
         print(f"Trade gains from {stock} trade {trade_set}.{i + 1}, ${float(positions_sold[stock]['trade_gains'][i]):.2f}")
         print(f"You made %{(positions_sold[stock]['percent_gain'][i] * 100):.2f}")
         print(f" ")
-        #displays metrics then deletes position'''
+        #displays metrics then deletes position
     
 #function to display final metrics
 '''def display_final_metrics(stock, row, positions, cash, trade_gains_losses):
@@ -167,7 +160,7 @@ def backtest_strategy(stock_list):
             elif sell_condition(stock, positions, row):
                 trade_set += 1
                 cash = sell_stock(stock, row, positions, cash, trade_gains_losses, positions_sold, index, percent_gains_losses, trade_set)
-                #trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses, positions_sold)
+                trade_metrics(stock, row, positions, cash, trade_gains_losses, trade_set, index, percent_gains_losses, positions_sold)
             stock_prices[stock].append(row['close'])
             rsi_values[stock].append(row['rsi'])
 
