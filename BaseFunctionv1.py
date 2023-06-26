@@ -34,7 +34,7 @@ def set_timeframe():
 def buy_condition(row):
     buy_condition_met = False
 
-    if __________
+    #if __________
 
     return buy_condition_met
 
@@ -42,7 +42,7 @@ def buy_condition(row):
 def sell_condition(stock, positions, row):
     sell_condition_met = False
 
-    if __________
+    #if __________
     
     return sell_condition_met
 
